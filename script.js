@@ -117,6 +117,8 @@ class App {
       .openPopup();
 
     this.#map.on('click', this._showForm.bind(this));
+
+    this._getLocalStorage();
   }
 
   _showForm(mapE) {
@@ -192,6 +194,8 @@ class App {
 
     // show workout
     this._renderWorkout(workout);
+
+    this._setLocalStorage();
   }
 
   _clearInputs() {
@@ -288,6 +292,28 @@ class App {
         duration: 1,
       },
     });
+  }
+
+  _setLocalStorage() {
+    localStorage.setItem('workouts', JSON.stringify(this.#workouts));
+  }
+
+  _getLocalStorage() {
+    const data = localStorage.getItem('workouts');
+
+    if (!data) return;
+
+    this.#workouts = JSON.parse(data);
+
+    this.#workouts.forEach(work => {
+      this._renderWorkout(work);
+      this._renderWorkoutMarker(work);
+    });
+  }
+
+  reset() {
+    localStorage.removeItem('workouts');
+    location.reload();
   }
 }
 
